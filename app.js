@@ -3,6 +3,7 @@ var express = require('express')
     , path = require('path')
     , engine = require('ejs-locals')
     , settings = require('./settings')
+    , security = require('./lib/security')
     , asseton = require('./lib/asseton');
 
 var app = module.exports = express();
@@ -13,7 +14,7 @@ app.enable('trust proxy');
 // all environments
 app.locals(settings.resources);
 app.set('port', process.env.PORT || 3030);
-app.set('views', __dirname + '/source/views');
+app.set('views', __dirname + '/src/views');
 app.set('view engine', 'ejs');
 app.engine('ejs', engine);
 
@@ -27,6 +28,7 @@ app.use(express.cookieParser(settings.secretKey));
 app.use(require('./lib/session')(express)); //set session middle-ware
 
 // routing
+app.use(security); //security checking including auto-sign-up and authentication
 
 var mode = app.get('env') || 'development';
 if ('development' == mode) {
@@ -60,6 +62,15 @@ app.use(function (err, req, res, next) { //Handle XHR errors
     res.render('error');
 });
 
-http.createServer(app).listen(app.get('port'), '127.0.0.1', function(){
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+server.listen(app.get('port'), '127.0.0.1', function(){
     logger.info('Favor server listening on port ' + app.get('port') + ' in ' + mode );
+});
+io.sockets.on('connection', function (socket) {
+    logger.debug('new socket is connected');
+    socket.emit('news', { hello: 'world' });
+    socket.on('message', function (data) {
+        console.log(data);
+    });
 });
