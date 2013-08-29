@@ -7,4 +7,5 @@ module.exports = function(app) {
         util.apply(input, req.asset || {});
         res.render('index', input);
     });
+
 };
