@@ -1,6 +1,6 @@
 {
-  "name": "favor",
-  "version": "0.0.1",
+  "name": "freshon",
+  "version": "0.0.2",
   "main": [],
   "dependencies": {
     "underscore": "~1.4.4",
@@ -11,6 +11,6 @@
     "requirejs": "~2.1.8",
     "animate.css": "latest",
     "font-awesome": "~3.2.1",
-    "jquery-file-upload": "~8.6.1"
+    "sockjs": "~0.3.4"
   }
 }

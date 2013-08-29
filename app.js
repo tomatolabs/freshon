@@ -63,14 +63,19 @@ app.use(function (err, req, res, next) { //Handle XHR errors
 });
 
 var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var imServer = require('sockjs').createServer();
+imServer.on('connection', function(conn) {
+    console.debug('someone is connected to IM server');
+    conn.on('data', function(message) {
+        console.debug('someone write message: ' + message);
+        conn.write(message);
+    });
+    conn.on('close', function() {
+        console.debug('someone is disconnected to IM server');
+    });
+});
+imServer.installHandlers(server, {prefix:'/im'});
 server.listen(app.get('port'), '127.0.0.1', function(){
     logger.info('Favor server listening on port ' + app.get('port') + ' in ' + mode );
 });
-io.sockets.on('connection', function (socket) {
-    logger.debug('new socket is connected');
-    socket.emit('news', { hello: 'world' });
-    socket.on('message', function (data) {
-        console.log(data);
-    });
-});
+
