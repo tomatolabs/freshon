@@ -37,16 +37,15 @@ define( ['Bootstrap', 'Backbone', 'jQuery', 'Sockjs'], function (Bootstrap, Back
     im.navigate();
     Backbone.history.start({pushState: true, hashChange: true});
 
-    var sock = new SockJS('http://localhost:3030/im');
+    var sock = new SockJS('http://localhost:3030/on');
     sock.onopen = function() {
         console.log('open');
         var uid = $('#userid').val();
-        var shakehand = {event: 'shakehand', content: uid};
-        sock.send( JSON.stringify(shakehand) );
+        var onlineEvent = {type: 'online', content: uid};
+        sock.send( JSON.stringify(onlineEvent) );
     };
     sock.onmessage = function(e) {
         console.log('message: ', e.data);
-        console.log('message: ', e);
     };
     sock.onclose = function() {
         console.log('close');

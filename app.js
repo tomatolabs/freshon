@@ -63,8 +63,8 @@ app.use(function (err, req, res, next) { //Handle XHR errors
 });
 
 var server = require('http').createServer(app);
-require('./lib/im')(server);
+var IMServer = require('./lib/im');
+var imServer = new IMServer(server, {prefix: '/on'});
 server.listen(app.get('port'), '127.0.0.1', function(){
     logger.info('Favor server listening on port ' + app.get('port') + ' in ' + mode );
 });
-
